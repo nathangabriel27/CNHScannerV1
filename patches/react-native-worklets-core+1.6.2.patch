@@ -1,0 +1,37 @@
+diff --git a/node_modules/react-native-worklets-core/android/CMakeLists.txt b/node_modules/react-native-worklets-core/android/CMakeLists.txt
+index cc4cbfe..41b3750 100644
+--- a/node_modules/react-native-worklets-core/android/CMakeLists.txt
++++ b/node_modules/react-native-worklets-core/android/CMakeLists.txt
+@@ -79,10 +79,18 @@ if(${JS_RUNTIME} STREQUAL "hermes")
+ 
+   string(APPEND CMAKE_CXX_FLAGS " -DJS_RUNTIME_HERMES=1")
+ 
+-  # RN 0.82+ publishes Hermes as `hermesvm` instead of `libhermes`
+-  # Reason: react-native-worklets-core@1.6.2 links Hermes using the old target on RN 0.82+, breaking Android builds.
+-  # This keeps compatibility across RN versions: <0.82 -> libhermes, >=0.82 -> hermesvm.
+-  # Update/remove this patch when upgrading React Native or react-native-worklets-core:
+-  # - If upstream includes this fix, delete the patch to avoid patch-package conflicts.
+-  # - If Hermes target names change again, adjust the linked target accordingly.
++  # RN 0.82+ publica o Hermes como `hermesvm` em vez de `libhermes`
++  # Motivo: o react-native-worklets-core@1.6.2 faz o link do Hermes usando o target antigo em RN 0.82+, quebrando o build no Android.
++  # Este patch mantém compatibilidade entre versões do RN:
++  # - RN < 0.82  -> hermes-engine::libhermes
++  # - RN >= 0.82 -> hermes-engine::hermesvm
++  # Quando atualizar/remover este patch:
++  # - Ao atualizar o React Native ou o react-native-worklets-core.
++  # - Se o upstream já trouxer essa correção, remova o patch para evitar conflitos com patch-package.
++  # - Se o Hermes mudar novamente o nome do target, ajuste o target linkado abaixo.
+   if(ReactAndroid_VERSION_MINOR GREATER_EQUAL 82)
+     target_link_libraries(
+       ${PACKAGE_NAME}
+       hermes-engine::hermesvm
+     )
+   else()
+     target_link_libraries(
+       ${PACKAGE_NAME}
+       hermes-engine::libhermes
+     )
+   endif()
+ 
+   if(${HERMES_ENABLE_DEBUGGER})
+     if(ReactAndroid_VERSION_MINOR GREATER_EQUAL 76)
